@@ -4,19 +4,21 @@ plugins {
 }
 
 ext {
-    PUBLISH_GROUP_ID = 'app.slyworks'
-    PUBLISH_VERSION = '1.0.0-alpha'
+    PUBLISH_GROUP_ID = 'app.slyworks.navigator'
+    PUBLISH_VERSION = '1.0.0-alpha-01'
     PUBLISH_ARTIFACT_ID = 'navigator'
+    MAVEN_CENTRAL_USERNAME = 'Yungjay131'
+    MAVEN_CENTRAL_PASSWORD = 'Password.123'
 }
 
 apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 

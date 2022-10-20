@@ -4,6 +4,8 @@ plugins {
 }
 
 android {
+    namespace = 'app.slyworks.navigator'
+
     compileSdk 33
 
     defaultConfig {

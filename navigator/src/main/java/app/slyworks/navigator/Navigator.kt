@@ -26,6 +26,12 @@ class Navigator private constructor() {
 
     companion object{
         @JvmStatic
+        fun restartApp(from:Context){
+            val a = (from as AppCompatActivity)
+            a.startActivity(Intent(from.applicationContext, a::class.java))
+            a.finish()
+        }
+        @JvmStatic
         inline fun <reified T: Activity> intentFor(from: Context): ActivityContinuation {
             return ActivityContinuationImpl(Intent(from, T::class.java), from as AppCompatActivity)
         }

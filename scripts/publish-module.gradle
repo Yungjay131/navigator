@@ -16,6 +16,7 @@ task androidSourcesJar(type: Jar) {
 
 artifacts {
     archives androidSourcesJar
+    //archives javadocJar
 }
 
 group = PUBLISH_GROUP_ID
@@ -39,17 +40,23 @@ afterEvaluate {
                 }
 
                 artifact androidSourcesJar
-                //artifact javadocJar
+               // artifact javadocJar
 
                 // Mostly self-explanatory metadata
                 pom {
                     name = PUBLISH_ARTIFACT_ID
-                    description = 'a helper library for everything Navigation.'
+                    description = 'a helper library for everything Activity and Fragment navigation in android'
                     url = 'https://github.com/Yungjay131/navigator'
+
+                    signing{
+                        sign publishing.publications.release
+                        sign configurations.archives
+                    }
+
                     licenses {
                         license {
-                            name = 'License'
-                            url = 'https://github.com/Yungjay131/navigator/blob/main/LICENSE'
+                            name = 'MIT License'
+                            url = 'https://github.com/Yungjay131/navigator/blob/master/LICENSE'
                         }
                     }
                     developers {
@@ -66,14 +73,27 @@ afterEvaluate {
                     scm {
                         connection = 'scm:git:github.com/Yungjay131/navigator.git'
                         developerConnection = 'scm:git:ssh://github.com/Yungjay131/navigator.git'
-                        url = 'https://github.com/Yungjay131/navigator/tree/main'
+                        url = 'https://github.com/Yungjay131/navigator/tree/master'
                     }
                 }
             }
         }
+
+       /* repositories  {
+            maven {
+                url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+                credentials = MAVEN_CENTRAL_USERNAME
+                password = MAVEN_CENTRAL_PASSWORD
+                 credentials {
+                    username = MAVEN_CENTRAL_USERNAME
+                    password = MAVEN_CENTRAL_PASSWORD
+                }
+            }
+        }*/
     }
 }
 
+/*
 signing {
     useInMemoryPgpKeys(
             rootProject.ext["signing.keyId"],
@@ -82,3 +102,4 @@ signing {
     )
     sign publishing.publications
 }
+*/
