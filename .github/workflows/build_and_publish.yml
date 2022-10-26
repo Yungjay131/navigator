@@ -1,0 +1,30 @@
+name: Build and Publish .aar to Maven 
+on:
+  push:
+     branches: [ master ] 
+     
+jobs:
+    build:
+       runs-on: windows
+       steps:
+         - name: Checkout
+           uses: actions/checkout@v3.0.1
+           
+         - name: Setup Java JDK
+           uses: actions/setup-java@v3.6.0
+           with:
+             java-version: 11
+             distribution: temurin
+             
+         - name: Make gradlew executable
+           run: chmod +x ./gradlew
+           
+         - name: Build and Deploy
+           run: ./gradlew navigator:publishReleasePublicationToSonatypeRepository
+           
+         - name: Upload .aar file
+           uses: actions/upload-artifact@v3.1.1
+           with:
+              name: aar
+              path: app/build/outputs/aar/app-release.aar
+           
