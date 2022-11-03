@@ -1,8 +1,9 @@
 name: Build and Publish .aar to Maven 
 on:
-  push:
-     branches: [ master ] 
-     
+   push:
+      tags:        
+        - '**'
+        
 jobs:
     build:
        runs-on: ubuntu-latest
