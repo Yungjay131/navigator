@@ -17,6 +17,7 @@ Usage
   where `SomeActivity` is the Activity you want to navigate to and `this` refers to the current Activity's `Context`.
   
   
+  
 2. Navigating to a new Activity, finishing the old Activity.
 ```kotlin
 Navigator.intentFor<SomeActivity>(this)
