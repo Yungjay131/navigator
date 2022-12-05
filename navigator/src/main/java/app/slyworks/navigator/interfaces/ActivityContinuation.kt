@@ -8,6 +8,8 @@ import android.view.View
  */
 interface ActivityContinuation {
     fun addSharedElementTransition(view:View, transitionViewName:String): ActivityContinuation
+    fun addExtra(key:String, value:Any): ActivityContinuation
+    fun setPackageName(packageName:String): ActivityContinuation
     fun clearTop(): ActivityContinuation
     fun newAndClearTask(): ActivityContinuation
     fun previousIsTop(): ActivityContinuation

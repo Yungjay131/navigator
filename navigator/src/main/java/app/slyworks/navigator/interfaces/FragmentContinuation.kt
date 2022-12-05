@@ -1,4 +1,4 @@
-package app.slyworks.navigator.interfaces
+package app.slyworks.navigation_feature.interfaces
 
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment

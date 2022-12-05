@@ -1,4 +1,4 @@
-package app.slyworks.navigator
+package app.slyworks.navigation_feature
 
 /**
  * Created by Joshua Sylvanus, 10:57 AM, 26/08/2022.

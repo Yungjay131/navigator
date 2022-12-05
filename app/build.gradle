@@ -3,24 +3,25 @@ plugins {
     id 'kotlin-android'
 }
 
-android {
-    namespace = 'app.slyworks.navigator'
+apply from: "${rootProject.projectDir}/scripts/dependencies.gradle"
 
-    compileSdk 33
+android {
+    //namespace config_details.applicationID
+    compileSdk config_details.compileSDK
 
     defaultConfig {
-        applicationId "app.slyworks.navigator"
-        minSdk 21
-        targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        applicationId config_details.applicationID
+        minSdk config_details.minSDK
+        targetSdk config_details.targetSDK
+        versionCode config_details.versionCode
+        versionName config_details.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled config_details.minifyEnabled
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -28,13 +29,52 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main {
+            res.srcDirs = [
+                    'src/main/res/layout',
+                    'src/main/res'
+            ]
+        }
+    }
+
+    viewBinding{
+        enabled = true
+    }
+
+    testOptions {
+        animationsDisabled = true
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 }
 
 dependencies {
-    //implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.31"
+    implementation project(path: ":navigator")
+
+    implementation impl_depends.core_ktx
+    implementation impl_depends.appcompat
+    implementation impl_depends.material
+
+    implementation impl_depends.kotlin_stdlib
+
+    testImplementation test_depends.core_testing
+    testImplementation test_depends.junit
+    testImplementation test_depends.robolectric
+    testImplementation test_depends.core_testing
+    testImplementation test_depends.android_junit
+    testImplementation test_depends.android_runner
+    testImplementation test_depends.espresso
+    testImplementation test_depends.espresso_contrib
+    testImplementation test_depends.espresso_intents
+    testImplementation test_depends.espresso_idling_resource
+    testImplementation test_depends.mockito
+    testImplementation test_depends.mockito_android
+    testImplementation test_depends.truth
 }

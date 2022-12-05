@@ -7,20 +7,20 @@ ext {
     PUBLISH_GROUP_ID = 'app.slyworks.navigator'
     PUBLISH_VERSION = '1.0.0-alpha-01'
     PUBLISH_ARTIFACT_ID = 'navigator'
-    MAVEN_CENTRAL_USERNAME = 'Yungjay131'
-    MAVEN_CENTRAL_PASSWORD = 'Password.123'
 }
 
 apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
+apply from: "${rootProject.projectDir}/scripts/dependencies.gradle"
 
 android {
-    compileSdk 33
+   // namespace config_details.navigatorID
+    compileSdk config_details.compileSDK
 
     defaultConfig {
-        minSdk 21
-        targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        minSdk config_details.minSDK
+        targetSdk config_details.targetSDK
+        versionCode config_details.versionCode
+        versionName config_details.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -28,7 +28,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled config_details.minifyEnabled
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -42,7 +42,6 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.6.0-alpha02'
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.31"
+    implementation impl_depends.core_ktx
+    implementation impl_depends.appcompat
 }

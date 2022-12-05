@@ -4,7 +4,7 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import app.slyworks.navigator.interfaces.FragmentContinuation
+import app.slyworks.navigation_feature.interfaces.FragmentContinuation
 
 
 /**

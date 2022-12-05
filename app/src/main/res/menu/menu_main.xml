@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_home"
+        android:title="Home"
+        android:icon="@drawable/ic_home"
+        android:enabled="true"/>
+
+    <item
+        android:id="@+id/action_search"
+        android:title="Search"
+        android:icon="@drawable/ic_search"
+        android:enabled="true"/>
+
+    <item
+        android:id="@+id/action_favorites"
+        android:title="Favorites"
+        android:icon="@drawable/ic_favorites"
+        android:enabled="true"/>
+</menu>
