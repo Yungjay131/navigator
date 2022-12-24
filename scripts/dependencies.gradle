@@ -6,11 +6,11 @@ def _config = [:]
 def _impl_depends = [:]
 def _test_depends = [:]
 
-_config.applicationID = 'app.slyworks.navigator'
-_config.navigatorID = 'app.slyworks.navigator-lib'
+_config.applicationID = 'dev.joshuasylvanus.navigator'
+_config.navigatorID = 'dev.joshuasylvanus.navigator-lib'
 _config.minSDK = 21
-_config.targetSDK = 32
-_config.compileSDK = 32
+_config.targetSDK = 33
+_config.compileSDK = 33
 _config.versionCode = 1
 _config.versionName = "1.0.0-alpha-01"
 _config.minifyEnabled = false

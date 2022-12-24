@@ -77,4 +77,18 @@ dependencies {
     testImplementation test_depends.mockito
     testImplementation test_depends.mockito_android
     testImplementation test_depends.truth
+
+    androidTestImplementation test_depends.core_testing
+    androidTestImplementation test_depends.junit
+    androidTestImplementation test_depends.robolectric
+    androidTestImplementation test_depends.core_testing
+    androidTestImplementation test_depends.android_junit
+    androidTestImplementation test_depends.android_runner
+    androidTestImplementation test_depends.espresso
+    androidTestImplementation test_depends.espresso_contrib
+    androidTestImplementation test_depends.espresso_intents
+    androidTestImplementation test_depends.espresso_idling_resource
+    androidTestImplementation test_depends.mockito
+    androidTestImplementation test_depends.mockito_android
+    androidTestImplementation test_depends.truth
 }

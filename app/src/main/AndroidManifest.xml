@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="app.slyworks.navigator_demo_app">
+    package="dev.joshuasylvanus.navigator_demo_app">
 
     <application
         android:allowBackup="true"
@@ -10,13 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Navigator">
         <activity
-            android:name=".SettingsActivity"
+            android:name="dev.joshuasylvanus.navigator_demo_app.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeActivity"
+            android:name="dev.joshuasylvanus.navigator_demo_app.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashActivity"
+            android:name="dev.joshuasylvanus.navigator_demo_app.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
