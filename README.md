@@ -118,7 +118,7 @@ navigator handles this by
 practical usage of this could be seen below
 ```kotlin
 this.onBackPressedDispatcher
-            .addCallback(this, object : OnBackPressedCallback(true){
+            .addCallback(object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() { 
                if(!fragmentNavigator!!.popBackStack())
                 //means currently visible fragment is the last fragment in the activity 
