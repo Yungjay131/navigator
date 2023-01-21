@@ -35,7 +35,7 @@ Navigator.intentFor<SomeActivity>(this)
              .singleTop()
              .navigate()
 ```             
-Please note that a new `Intent` flag clears the previously set `Intent` flag (might change this implementation in future releases).
+Please note that a new `Intent` flag adds to the previously set `Intent` flag (might change this implementation in future releases).
 
 
 4. Navigating to a new Activity with `SharedElementTransitions`.
@@ -72,6 +72,6 @@ repositories {
 }
 
 dependencies {
-   implementation 'app.slyworks.navigator:navigator:1.0.0-alpha'
+   implementation 'dev.joshuasylvanus.navigator:navigator:1.0.0-alpha'
 }
 ```
