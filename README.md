@@ -69,10 +69,20 @@ Navigator.IntentFor(this, SOME_ACTIVITY_INTENT_FILTER)
  ```
  
 Navigator also provides functions for handling fragment transaction operations, which comes in 2 variants
+
 a - fire and forget fragment transactions
+```kotlin
+Navigator.transactionFrom(supportFragmentManager) 
+         .into(R.id.fraggment_container)
+         .show(ExampleFragment.newInstance())
+         .navigate()
+```
+
+
 b - Fragment transactions where state is required
 
-b - ```kotlin
+b - 
+```kotlin
 lateinit val fragmentNavigator:FragmentContinuationStateful
 
 fragmentNavigator = Navigator.transactionWithStateFrom(supportFragmentManager)
@@ -100,7 +110,7 @@ fragmentNavigator
 ```
 
 A common pain point of working with Fragments is handling the back navigation properly
-navigator handles is by
+navigator handles this by
 ```kotlin
   val wasFragmentPopped:Boolean = fragmentNavigator.popBackstack()
 ```
@@ -115,6 +125,7 @@ this.onBackPressedDispatcher
                 activity.finish()
                 }
             })
+ ```           
             
             
 
