@@ -4,7 +4,7 @@ import android.view.View
 
 
 /**
- *Created by Joshua Sylvanus, 5:59 AM, 25/08/2022.
+ * Created by Joshua Sylvanus, 5:59 AM, 25/08/2022.
  */
 interface ActivityContinuation {
     fun addSharedElementTransition(view:View, transitionViewName:String): ActivityContinuation
@@ -13,6 +13,9 @@ interface ActivityContinuation {
     fun clearTop(): ActivityContinuation
     fun newAndClearTask(): ActivityContinuation
     fun previousIsTop(): ActivityContinuation
+    fun singleTop(): ActivityContinuation
+    fun noHistory(): ActivityContinuation
+    fun reorderToFront(): ActivityContinuation
     fun finishCaller(): ActivityContinuation
     fun navigate()
 }

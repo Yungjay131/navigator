@@ -1,97 +1,103 @@
 package dev.joshuasylvanus.navigator.impl
 
+import android.app.Activity
+import android.app.Application
 import androidx.annotation.IdRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import dev.joshuasylvanus.navigator.ContainerAlreadySetException
-import dev.joshuasylvanus.navigator.interfaces.FragmentContinuation
-import app.slyworks.navigation_feature.interfaces.FragmentContinuationStateful
+import dev.joshuasylvanus.navigator.interfaces.FragmentContinuationStateful
+import java.lang.NullPointerException
 
 
 /**
  * Created by Joshua Sylvanus, 6:04 AM, 25/08/2022.
  */
 
-data class FragmentContinuationStatefulImpl(private var _fragmentManager: FragmentManager?)
+class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentManager)
     : FragmentContinuationStateful {
     //region Vars
-    private var fragmentManager: FragmentManager = _fragmentManager!!
+    private val DEFAULT = "NOT_SET"
 
-    private var _transaction: FragmentTransaction? = null
-    private lateinit var transaction: FragmentTransaction
+    private var transaction: FragmentTransaction? = null
     private var containerID: Int = 0
 
     private var afterFunc:(() -> Unit)? = null
 
-    private var currentFragmentTag:String? = null
+    private var currentFragmentTag:String = DEFAULT
     private var fragmentTagList:MutableList<String> = mutableListOf()
     //endregion
 
     init { init() }
 
     private fun init(){
-        _transaction = fragmentManager.beginTransaction()
+        transaction = fragmentManager.beginTransaction()
 
-        transaction = _transaction!!
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        transaction!!.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
     }
 
-    override fun into(@IdRes containerID:Int): FragmentContinuation {
-        if(this.containerID != 0)
-            throw ContainerAlreadySetException()
+    override fun into(@IdRes containerID:Int): FragmentContinuationStateful {
+        if(this.containerID == 0)
+            this.containerID = containerID
 
-        this.containerID = containerID
         return this
     }
 
-    fun replace(f: Fragment): FragmentContinuation {
-        transaction.addToBackStack("${f::class.simpleName}")
-        transaction.replace(containerID, f)
-        currentFragmentTag = f::class.simpleName
+    override fun replace(f: Fragment): FragmentContinuationStateful {
+        transaction!!.addToBackStack("${f::class.simpleName}")
+        transaction!!.replace(containerID, f)
+        currentFragmentTag = f::class.simpleName!!
         return this
     }
 
-    override fun hideCurrent(): FragmentContinuation {
-        if(currentFragmentTag != null) {
-            val f: Fragment = fragmentManager.findFragmentByTag(currentFragmentTag!!)!!
-            transaction.hide(f)
+    override fun hideCurrent(): FragmentContinuationStateful {
+        if(currentFragmentTag != DEFAULT) {
+            val f: Fragment = fragmentManager.findFragmentByTag(currentFragmentTag)!!
+            transaction!!.hide(f)
             fragmentTagList.removeLast()
-            //currentFragmentTag = f::class.simpleName
-            fragmentTagList.add(currentFragmentTag!!)
+            fragmentTagList.add(currentFragmentTag)
         }
 
         return this
     }
 
-    override fun show(f: Fragment, currentTag: String?): FragmentContinuation {
+    override fun show(f: Fragment, currentTag: String?): FragmentContinuationStateful {
         /*no op, no need since the whole purpose of this implementation is to remove the need for this method*/
         show(f)
         return this
     }
 
-    override fun show(f: Fragment): FragmentContinuation {
-        if(fragmentManager.findFragmentByTag(f::class.simpleName) != null){
+    override fun show(f: Fragment): FragmentContinuationStateful {
+        if(fragmentManager.findFragmentByTag(f::class.simpleName) != null &&
+           currentFragmentTag != DEFAULT){
             /*its been added before*/
-            transaction.hide(fragmentManager.findFragmentByTag(currentFragmentTag!!)!!)
-            transaction.show(fragmentManager.findFragmentByTag(f::class.simpleName)!!)
-        }else{
-            if(fragmentManager.findFragmentById(containerID) != null)
-            /*hide currently visible Fragment*/
-                transaction.hide(fragmentManager.findFragmentByTag(currentFragmentTag!!)!!)
+            val _f:Fragment = fragmentManager.findFragmentByTag(currentFragmentTag)!!
+            transaction!!.hide(_f)
 
-            transaction.addToBackStack("${f::class.simpleName}")
-            transaction.add(containerID, f, "${f::class.simpleName}")
+            val __f:Fragment = fragmentManager.findFragmentByTag(f::class.simpleName)!!
+            transaction!!.show(__f)
+        }else{
+            /*hide currently visible Fragment*/
+            if(fragmentManager.findFragmentById(containerID) != null)
+                transaction!!.hide(fragmentManager.findFragmentByTag(currentFragmentTag)!!)
+
+            transaction!!.addToBackStack("${f::class.simpleName}")
+            transaction!!.add(containerID, f, "${f::class.simpleName}")
         }
 
-        currentFragmentTag = f::class.simpleName
+        currentFragmentTag = f::class.simpleName!!
         fragmentTagList = fragmentTagList.filter { it != f::class.simpleName } as MutableList<String>
-        fragmentTagList.add(currentFragmentTag!!)
+        fragmentTagList.add(currentFragmentTag)
 
         return this
     }
 
-    override fun after(block:() -> Unit): FragmentContinuation {
+    override fun after(block:() -> Unit): FragmentContinuationStateful {
         afterFunc = block
         return this
     }
@@ -103,8 +109,30 @@ data class FragmentContinuationStatefulImpl(private var _fragmentManager: Fragme
             fragmentTagList.removeLast()
             currentFragmentTag = fragmentTagList.last()
 
-            also?.invoke(currentFragmentTag!!)
+            also?.invoke(currentFragmentTag)
 
+            wasPopped = true
+        }
+
+        return wasPopped
+    }
+
+    /**
+     * @param tag KClass#simpleName String of the fragment class you want to pop to
+     * @return true if backStack was popped or false if current Fragment is the only Fragment in the backstack */
+    override fun popBackStack(tag:String):Boolean{
+        var wasPopped = false
+        if(fragmentManager.backStackEntryCount > 1){
+            fragmentManager.popBackStack(tag,0)
+
+            val fragmentIndex:Int = fragmentTagList.indexOf(tag)
+            var currentIndex:Int = fragmentTagList.size - 1
+            while(currentIndex != fragmentIndex){
+               fragmentTagList.removeLast()
+               currentIndex--
+            }
+
+            currentFragmentTag = fragmentTagList.last()
             wasPopped = true
         }
 
@@ -113,11 +141,10 @@ data class FragmentContinuationStatefulImpl(private var _fragmentManager: Fragme
 
     override fun onDestroy(block: (() -> Unit)?) {
         block?.invoke()
-        _fragmentManager = null
     }
 
     override fun navigate(){
-        transaction.commit()
+        transaction!!.commit()
         afterFunc?.invoke()
 
         init()

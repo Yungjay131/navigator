@@ -12,6 +12,7 @@ interface FragmentContinuation {
     fun hideCurrent(): FragmentContinuation
     fun show(f: Fragment, currentTag: String?): FragmentContinuation
     fun show(f: Fragment): FragmentContinuation
+    fun replace(f: Fragment): FragmentContinuation
     fun after(block: () -> Unit): FragmentContinuation
     fun navigate()
 }

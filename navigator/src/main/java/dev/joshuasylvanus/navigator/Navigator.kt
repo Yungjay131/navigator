@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import dev.joshuasylvanus.navigator.interfaces.ActivityContinuation
 import dev.joshuasylvanus.navigator.interfaces.FragmentContinuation
-import app.slyworks.navigation_feature.interfaces.FragmentContinuationStateful
+import dev.joshuasylvanus.navigator.interfaces.FragmentContinuationStateful
 import dev.joshuasylvanus.navigator.impl.ActivityContinuationImpl
 import dev.joshuasylvanus.navigator.impl.FragmentContinuationImpl
 import dev.joshuasylvanus.navigator.impl.FragmentContinuationStatefulImpl
@@ -68,18 +68,21 @@ class Navigator private constructor() {
             Intent(intentFilter).setPackage(from.packageName)
 
         @JvmStatic
-        fun transactionFrom(fragmentManager: FragmentManager): FragmentContinuation {
-            return FragmentContinuationImpl(fragmentManager)
-        }
+        fun transactionFrom(fragmentManager: FragmentManager): FragmentContinuation =
+           FragmentContinuationImpl(fragmentManager)
+
 
         @JvmStatic
-        fun transactionWithStateFrom(fragmentManager: FragmentManager): FragmentContinuationStateful {
-            return FragmentContinuationStatefulImpl(fragmentManager)
-        }
+        fun transactionWithStateFrom(fragmentManager: FragmentManager): FragmentContinuationStateful =
+           FragmentContinuationStatefulImpl(fragmentManager = fragmentManager)
+
 
         @JvmStatic
         inline fun <reified T> Intent.getExtra(key:String, defaultValue:T? = null):T?{
             return when(T::class){
+                Boolean::class ->
+                    this.getBooleanExtra(key, defaultValue!! as Boolean ) as T
+
                 String::class ->{
                     val s: String = this.getStringExtra(key) ?: return defaultValue
 

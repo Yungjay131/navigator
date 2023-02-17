@@ -12,7 +12,7 @@ _config.minSDK = 21
 _config.targetSDK = 33
 _config.compileSDK = 33
 _config.versionCode = 1
-_config.versionName = "1.0.0-alpha-01"
+_config.versionName = "1.0.0"
 _config.minifyEnabled = false
 
 _impl_depends.core_ktx = 'androidx.core:core-ktx:1.6.0-alpha02'

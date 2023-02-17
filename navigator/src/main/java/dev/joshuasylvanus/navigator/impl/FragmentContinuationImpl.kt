@@ -8,11 +8,11 @@ import dev.joshuasylvanus.navigator.interfaces.FragmentContinuation
 
 
 /**
- *Created by Joshua Sylvanus, 6:05 AM, 25/08/2022.
+ * Created by Joshua Sylvanus, 6:05 AM, 25/08/2022.
  */
-data class FragmentContinuationImpl(private var _fragmentManager: FragmentManager?)
+class FragmentContinuationImpl(private val fragmentManager: FragmentManager)
     : FragmentContinuation {
-    private var fragmentManager: FragmentManager = _fragmentManager!!
+    private val DEFAULT = "NOT_SET"
 
     private var _transaction: FragmentTransaction? = null
     private var transaction: FragmentTransaction
@@ -26,15 +26,14 @@ data class FragmentContinuationImpl(private var _fragmentManager: FragmentManage
     }
 
     override fun into(@IdRes containerID:Int): FragmentContinuation {
-        if(this.containerID != 0)
-            throw UnsupportedOperationException("ContainerID has already been set")
+        if(this.containerID == 0)
+            this.containerID = containerID
 
-        this.containerID = containerID
         return this
     }
 
 
-    fun replace(f: Fragment): FragmentContinuation {
+    override fun replace(f: Fragment): FragmentContinuation {
         transaction.addToBackStack("${f::class.simpleName}")
         transaction.replace(containerID, f)
         return this
@@ -90,6 +89,5 @@ data class FragmentContinuationImpl(private var _fragmentManager: FragmentManage
         transaction.commit()
 
         _transaction = null
-        _fragmentManager = null
     }
 }

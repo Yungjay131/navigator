@@ -5,7 +5,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.annotation.VisibleForTesting
 import androidx.collection.SimpleArrayMap
-import app.slyworks.navigation_feature.interfaces.FragmentContinuationStateful
+import dev.joshuasylvanus.navigator.interfaces.FragmentContinuationStateful
 import dev.joshuasylvanus.navigator.Navigator
 import dev.joshuasylvanus.navigator_demo_app.databinding.ActivityHomeBinding
 import java.lang.reflect.Modifier.PRIVATE

@@ -7,12 +7,12 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
-import dev.joshuasylvanus.navigation_feature.Navigator
 import org.junit.Test
 
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import com.google.common.truth.Truth.assertThat
+import dev.joshuasylvanus.navigator.Navigator
 import org.junit.Before
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.spy

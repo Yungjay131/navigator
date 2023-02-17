@@ -14,9 +14,9 @@ import dev.joshuasylvanus.navigator.interfaces.ActivityContinuation
  * Created by Joshua Sylvanus, 6:02 AM, 25/08/2022.
  */
 
-data class ActivityContinuationImpl(@PublishedApi
-                                    internal val intent: Intent,
-                                    private var activity: Activity?) : ActivityContinuation {
+class ActivityContinuationImpl(@PublishedApi
+                               internal val intent: Intent,
+                               private var activity: Activity?) : ActivityContinuation {
     private var shouldFinishCaller:Boolean = false
     private var transitionPairs:MutableList<Pair<View, String>> = mutableListOf()
 
@@ -35,8 +35,8 @@ data class ActivityContinuationImpl(@PublishedApi
             is Byte -> this.intent.putExtra(key, value)
             is Boolean -> this.intent.putExtra(key, value)
             is String -> this.intent.putExtra(key, value)
-            is Parcelable -> this.intent.putExtra(key, value)
             is Bundle -> this.intent.putExtra(key, value)
+            is Parcelable -> this.intent.putExtra(key, value)
             else -> throw IllegalArgumentException("the type for `value` is not supported")
         }
 
@@ -49,22 +49,32 @@ data class ActivityContinuationImpl(@PublishedApi
     }
 
     override fun clearTop(): ActivityContinuation {
-        this.intent.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        this.intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         return this
     }
 
     override fun newAndClearTask(): ActivityContinuation {
-        this.intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        this.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         return this
     }
 
     override fun previousIsTop(): ActivityContinuation {
-        this.intent.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP)
+        this.intent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP)
         return this
     }
 
-    fun singleTop(): ActivityContinuation {
-        this.intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    override fun singleTop(): ActivityContinuation {
+        this.intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        return this
+    }
+
+    override fun noHistory():ActivityContinuation{
+        this.intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+        return this
+    }
+
+    override fun reorderToFront():ActivityContinuation{
+        this.intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
         return this
     }
 
