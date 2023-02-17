@@ -33,9 +33,11 @@ Navigator.intentFor<SomeActivity>(this)
              .clearTop()
              .previousIsTop()
              .singleTop()
+             .noHistory()
+             .reorderToFront()
              .navigate()
 ```             
-Please note that a new `Intent` flag clears the previously set `Intent` flag (might change this implementation in future releases).
+Please note that a new `Intent` flag adds to the previously set `Intent` flag (might change this implementation in future releases).
 
 
 4. Navigating to a new Activity with `SharedElementTransitions`.
@@ -56,12 +58,76 @@ Navigator.intentFor<SomeActivity>(this)
  ```
  where clazz is the `String` className for the Actvity being navigated to.
  
+6. Navigating to activities using implicit intents, which is useful in multi-module projects where an activity may not "know" about another activity
+```kotlin
+Navigator.IntentFor(this, SOME_ACTIVITY_INTENT_FILTER)
+```
 
-6. A utility extension function for getting all `Intent` extras from an `Intent`.
+7. A utility extension function for getting all `Intent` extras from an `Intent`.
  ``` kotlin
  this.intent.getExtra<String>(key, defaultValue)
  ```
+ 
+Navigator also provides functions for handling fragment transaction operations, which comes in 2 variants
 
+a - fire and forget fragment transactions
+```kotlin
+Navigator.transactionFrom(supportFragmentManager) 
+         .into(R.id.fraggment_container)
+         .show(ExampleFragment.newInstance())
+         .navigate()
+```
+
+
+b - Fragment transactions where state is required
+
+b - 
+```kotlin
+lateinit val fragmentNavigator:FragmentContinuationStateful
+
+fragmentNavigator = Navigator.transactionWithStateFrom(supportFragmentManager)
+   .into(R.id.fragmentContainer)
+   .hideCurrent()
+   .show(ExampleFragment.newInstance())
+   .navigate()
+```
+please note:
+A ContainerAlreadySetException is thrown if you try to set the fragment container id more than once
+
+subsequent usages would be 
+```kotlin
+fragmentNavigator
+    .hideCurrent()
+    .show()
+    .navigate()
+```
+
+to replace an existing fragment
+```kotlin 
+fragmentNavigator
+   .replace()
+   .navigate()
+```
+
+A common pain point of working with Fragments is handling the back navigation properly
+navigator handles this by
+```kotlin
+  val wasFragmentPopped:Boolean = fragmentNavigator.popBackstack()
+```
+ 
+practical usage of this could be seen below
+```kotlin
+this.onBackPressedDispatcher
+            .addCallback(object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() { 
+               if(!fragmentNavigator!!.popBackStack())
+                //means currently visible fragment is the last fragment in the activity 
+                activity.finish()
+                }
+            })
+ ```           
+            
+            
 
 Download
 --------
@@ -72,6 +138,6 @@ repositories {
 }
 
 dependencies {
-   implementation 'app.slyworks.navigator:navigator:1.0.0-alpha'
+   implementation 'dev.joshuasylvanus.navigator:navigator:1.0.0-alpha'
 }
 ```
