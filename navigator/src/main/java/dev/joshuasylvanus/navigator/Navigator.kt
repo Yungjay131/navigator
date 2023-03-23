@@ -1,8 +1,10 @@
 package dev.joshuasylvanus.navigator
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.appcompat.app.AppCompatActivity
@@ -33,20 +35,23 @@ class Navigator private constructor() {
     companion object{
         @JvmStatic
         fun minimizeApp(from:Context){
-           val a = (from as AppCompatActivity)
-           /*val intent = Intent(Intent.ACTION_MAIN)
-           intent.addCategory(Intent.CATEGORY_HOME)
-           intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-           a.startActivity(intent)*/
-
-           a.moveTaskToBack(true)
+           (from as AppCompatActivity).moveTaskToBack(true)
         }
 
         @JvmStatic
-        fun restartApp(from:Context){
-            val a = (from as AppCompatActivity)
-            a.startActivity(Intent(from.applicationContext, a::class.java))
-            a.finish()
+        fun restartApp(context:Context,
+                        extraKey:String? = null,
+                        extraValue:String? = null){
+            val packageManager:PackageManager = context.packageManager
+            val originalIntent:Intent = packageManager.getLaunchIntentForPackage(context.packageName)!!
+            val componentName:ComponentName = originalIntent.component!!
+
+            val intent:Intent = Intent.makeRestartActivityTask(componentName)
+            if(extraKey != null && extraValue != null)
+                intent.putExtra(extraKey, extraValue)
+            context.startActivity(intent)
+
+            Runtime.getRuntime().exit(0)
         }
 
         @JvmStatic

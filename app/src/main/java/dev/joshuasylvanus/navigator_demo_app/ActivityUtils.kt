@@ -10,5 +10,7 @@ object ActivityUtils {
     fun isLastActivity():Boolean = count == 1
     fun incrementActivityCount():Int = count++
     fun decrementActivityCount():Int = count--
+    fun getActivityCount():Int = count
+    fun setActivityCount(count:Int){ this.count = count }
 }
 

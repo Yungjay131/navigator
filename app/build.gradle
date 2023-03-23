@@ -63,6 +63,7 @@ dependencies {
     implementation impl_depends.material
 
     implementation impl_depends.kotlin_stdlib
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     testImplementation test_depends.core_testing
     testImplementation test_depends.junit
@@ -71,24 +72,20 @@ dependencies {
     testImplementation test_depends.android_junit
     testImplementation test_depends.android_runner
     testImplementation test_depends.espresso
-    testImplementation test_depends.espresso_contrib
     testImplementation test_depends.espresso_intents
     testImplementation test_depends.espresso_idling_resource
     testImplementation test_depends.mockito
-    testImplementation test_depends.mockito_android
     testImplementation test_depends.truth
 
     androidTestImplementation test_depends.core_testing
     androidTestImplementation test_depends.junit
-    androidTestImplementation test_depends.robolectric
     androidTestImplementation test_depends.core_testing
     androidTestImplementation test_depends.android_junit
     androidTestImplementation test_depends.android_runner
     androidTestImplementation test_depends.espresso
-    androidTestImplementation test_depends.espresso_contrib
     androidTestImplementation test_depends.espresso_intents
     androidTestImplementation test_depends.espresso_idling_resource
-    androidTestImplementation test_depends.mockito
+    androidTestImplementation test_depends.dexmaker
     androidTestImplementation test_depends.mockito_android
     androidTestImplementation test_depends.truth
 }

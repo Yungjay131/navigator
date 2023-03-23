@@ -13,6 +13,8 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import com.google.common.truth.Truth.assertThat
 import dev.joshuasylvanus.navigator.Navigator
+import dev.joshuasylvanus.navigator_demo_app.home.HomeActivity
+import dev.joshuasylvanus.navigator_demo_app.splash.SplashActivity
 import org.junit.Before
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.spy

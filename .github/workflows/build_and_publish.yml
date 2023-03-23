@@ -6,7 +6,7 @@ on:
         
 jobs:
    publish:
-       name: release, build and publish
+       name: Build, Release and Publish
        runs-on: ubuntu-latest
        steps:
          - name: Checkout code
@@ -15,9 +15,9 @@ jobs:
          - name: Setup Java JDK
            uses: actions/setup-java@v3.6.0
            with:
-             java-version: 11
              distribution: adopt
-             
+             java-version: 11
+
          - name: Make gradlew executable
            run: chmod +x ./gradlew
 
@@ -25,11 +25,7 @@ jobs:
            run: ./gradlew :navigator:assembleRelease
 
          - name: upload and close staging repo
-           run: >
-             ./gradlew
-             navigator:publishReleasePublicationToSonatypeRepository
-             --max-workers 1
-             closeAndReleaseSonatypeStagingRepository
+           run: ./gradlew navigator:publishReleasePublicationToSonatypeRepository --max-workers 1 closeAndReleaseSonatypeStagingRepository
            env:
              OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
              OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
