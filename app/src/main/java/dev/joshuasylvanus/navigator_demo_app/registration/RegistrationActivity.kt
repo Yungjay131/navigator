@@ -14,8 +14,7 @@ class RegistrationActivity : BaseActivity() {
         FRAGMENT_REG_ZERO to RegistrationGeneral0Fragment::newInstance,
         FRAGMENT_REG_ONE to RegistrationGeneral1Fragment::newInstance,
         FRAGMENT_REG_TWO to RegistrationGeneral2Fragment::newInstance,
-        FRAGMENT_REG_OTP to RegistrationOTP1Fragment::newInstance
-    )
+        FRAGMENT_REG_OTP to RegistrationOTP1Fragment::newInstance )
 
     private lateinit var binding: ActivityRegistrationBinding
 

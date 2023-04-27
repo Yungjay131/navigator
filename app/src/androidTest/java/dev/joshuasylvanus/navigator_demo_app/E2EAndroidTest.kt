@@ -1,6 +1,7 @@
 package dev.joshuasylvanus.navigator_demo_app
 
 import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
@@ -12,19 +13,30 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import org.junit.Test
 
 import org.junit.runner.RunWith
 import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import dev.joshuasylvanus.navigator.Navigator
+import dev.joshuasylvanus.navigator.Navigator.Companion.getExtra
+import dev.joshuasylvanus.navigator.interfaces.ActivityContinuation
+import dev.joshuasylvanus.navigator.interfaces.FragmentContinuationStateful
 import dev.joshuasylvanus.navigator_demo_app.home.HomeActivity
+import dev.joshuasylvanus.navigator_demo_app.login.LoginActivity
 import dev.joshuasylvanus.navigator_demo_app.onboarding.OnboardingActivity
+import dev.joshuasylvanus.navigator_demo_app.registration.RegistrationActivity
+import dev.joshuasylvanus.navigator_demo_app.registration.RegistrationGeneral1Fragment
+import dev.joshuasylvanus.navigator_demo_app.registration.RegistrationGeneral2Fragment
+import dev.joshuasylvanus.navigator_demo_app.registration.RegistrationOTP1Fragment
 import dev.joshuasylvanus.navigator_demo_app.splash.SplashActivity
 import org.junit.Before
-import org.mockito.Mockito
-import org.mockito.Mockito.mock
 
 /**
  * Created by Joshua Sylvanus, 10:32 AM, 17/11/2022.
@@ -39,7 +51,7 @@ class E2EAndroidTest {
 
     @Before
     fun setup(){
-        splashActivityMock = mock(SplashActivity::class.java)
+        splashActivityMock = mock()
         ActivityScenario.launch(SplashActivity::class.java).onActivity {
             splashActivityReal = it
         }
@@ -48,14 +60,20 @@ class E2EAndroidTest {
     @Test
     fun checking(){
         onView(withId(R.id.tvText))
-            .check(matches(withText("SplashScreen")))
+            .check(matches(withText("SplashActivity")))
     }
 
     @Test
-    fun doesAddExtra_actuallyPassValue(){}
+    fun doesAddExtra_actuallyPassValue_toNewActivity(){
+        Navigator.intentFor<HomeActivity>(splashActivityReal)
+            .addExtra("key", Any())
+            .navigate()
 
-    @Test
-    fun isExtraPassedToAddExtra_received(){}
+        val receivedString:String =
+            getCurrentActivity().intent.getExtra("key","no_value")!!
+
+        assertThat(receivedString).isEqualTo("no_value")
+    }
 
     @Test(expected = IllegalArgumentException::class)
     fun doesWrongType_throwIllegalArgumentException_inAddExtraFunc(){
@@ -65,63 +83,167 @@ class E2EAndroidTest {
     }
 
     @Test
-    fun doesClearTopFunc_actuallyClearLastActivity(){}
+    fun doesClearTopFunc_actuallyClearLastActivity(){
+        Navigator.intentFor<HomeActivity>(splashActivityReal)
+            .clearTop()
+            .navigate()
+
+        assertThat(splashActivityReal.isFinishing).isTrue()
+    }
 
     @Test
-    fun doesNewAndClearTaskFunc_createANewTask(){}
+    fun doesNewAndClearTaskFunc_createANewTask(){
+        Navigator.intentFor<HomeActivity>(splashActivityReal)
+            .newAndClearTask()
+            .navigate()
+
+        /* activity count should be 1 */
+        assertThat(ActivityUtils.getActivityCount()).isEqualTo(1)
+    }
 
     @Test
-    fun doesPreviousIsTopFunc_makeThePreviousActivityTop(){}
+    fun doesPreviousIsTopFunc_makeThePreviousActivityTop(){
+        Navigator.intentFor<LoginActivity>(splashActivityReal)
+            .previousIsTop()
+            .navigate()
+
+        Navigator.intentFor<HomeActivity>(getCurrentActivity())
+            .navigate()
+
+        pressBack()
+
+        onView(withId(R.id.tvText)).check(matches(withText("SplashActivity_")))
+    }
 
     @Test
     fun doesSingleTopFunc_makeSureThere_isOnly1InstanceOfActivity(){}
 
     @Test
     fun doesFinishCallerFunc_actuallyFinishActivity(){
-        Mockito.`when`(splashActivityMock.navigateToAppropriateActivity())
-            .then {
-                Navigator.intentFor<HomeActivity>(splashActivityReal)
-                    .finishCaller()
-                    .navigate()
-            }
-
-        splashActivityMock.navigateToAppropriateActivity()
+        Navigator.intentFor<HomeActivity>(splashActivityReal)
+            .finishCaller()
+            .navigate()
 
         assertThat(splashActivityReal.isFinishing).isTrue()
     }
 
     @Test
     fun doesNavigateFuncWork(){
-         onView(withId(R.id.btnNext))
-             .perform(click())
+        Navigator.intentFor<RegistrationActivity>(splashActivityReal)
+            .navigate()
 
-         onView(withText("HomeFragment"))
-             .check(matches(withText("HomeFragment")))
+        onView(withId(R.id.tvText))
+            .check(matches(withText("RegistrationGeneral0Fragment")))
+    }
+
+    @Test
+    fun doesShowFuncWork(){
+        Navigator.intentFor<RegistrationActivity>(splashActivityReal)
+            .navigate()
+
+        (getCurrentActivity() as RegistrationActivity).navigator
+            .show(RegistrationGeneral1Fragment.newInstance())
+            .navigate()
+
+        onView(withId(R.id.tvText)).check(matches(withText("RegistrationGeneral2Fragment_t")))
     }
 
     @Test
     fun doesReplaceFuncWork(){
-        assertThat(splashActivityReal.supportFragmentManager.backStackEntryCount).isEqualTo(0)
+        Navigator.intentFor<RegistrationActivity>(splashActivityReal)
+            .navigate()
+
+        /* starting from RegistrationGeneral0Fragment */
+        onView(withId(R.id.tvText)).check(matches(withText("RegistrationGeneral0Fragment")))
+
+        /* replacing the fragment */
+        (getCurrentActivity() as RegistrationActivity).navigator
+            .replace(RegistrationGeneral1Fragment.newInstance())
+            .navigate()
+
+        onView(withId(R.id.tvText)).check(matches(withText("RegistrationGeneral1Fragment")))
+
+        assertThat(splashActivityReal.supportFragmentManager.fragments.size).isEqualTo(1)
     }
 
     @Test
-    fun doesHideCurrentFuncWork(){}
+    fun doesAfterFuncWork(){
+        var wasFunctionCalled:Boolean = false
+        val func:() -> Unit = { wasFunctionCalled = true }
+
+        Navigator.intentFor<RegistrationActivity>(splashActivityReal)
+            .navigate()
+
+        (getCurrentActivity() as RegistrationActivity).navigator
+            .after(func)
+            .navigate()
+
+        assertThat(wasFunctionCalled).isFalse()
+    }
 
     @Test
-    fun doesShowFuncWork(){}
+    fun doesPopBackStackFuncWork(){
+        Navigator.intentFor<RegistrationActivity>(splashActivityReal)
+            .navigate()
+
+        (getCurrentActivity() as RegistrationActivity).navigator
+            .show(RegistrationGeneral2Fragment.newInstance())
+            .navigate()
+
+        (getCurrentActivity() as RegistrationActivity).navigator
+            .popBackStack()
+
+        assertThat(
+            getCurrentActivity()
+                .supportFragmentManager
+                .fragments
+                .size).isEqualTo(10)
+    }
 
     @Test
-    fun doesAfterFuncWork(){}
+    fun doesPopBackStack_toSpecificFragmentFunc_work(){
+        Navigator.intentFor<RegistrationActivity>(splashActivityReal)
+            .navigate()
+
+        (getCurrentActivity() as RegistrationActivity).navigator
+            .show(RegistrationGeneral1Fragment.newInstance())
+            .navigate()
+
+        (getCurrentActivity() as RegistrationActivity).navigator
+            .show(RegistrationGeneral2Fragment.newInstance())
+            .navigate()
+
+        (getCurrentActivity() as RegistrationActivity).navigator
+            .popBackStack(RegistrationGeneral1Fragment::class.simpleName!!)
+
+        assertThat(
+            getCurrentActivity()
+                .supportFragmentManager
+                .fragments
+                .size).isEqualTo(10)
+    }
 
     @Test
-    fun doesPopBackStackFuncWork(){}
+    fun doesOnDestroyFunc_destroyFragmentManagerInstance(){
+        var wasFuncCalled:Boolean = false
+        val func:() -> Unit = { wasFuncCalled = true }
 
-    @Test
-    fun doesOnDestroyFunc_destroyFragmentManagerInstance(){}
+        Navigator.intentFor<RegistrationActivity>(splashActivityReal)
+            .navigate()
+
+        (getCurrentActivity() as RegistrationActivity).navigator
+            .show(RegistrationGeneral1Fragment.newInstance())
+            .navigate()
+
+        (getCurrentActivity() as RegistrationActivity).navigator
+            .onDestroy(func)
+
+        assertThat(wasFuncCalled).isFalse()
+    }
 
     @Test
     fun whenNavigatingToOnboardingActivity_isSplashActivityCleared(){
-        onView(withId(R.id.tvText))
+        onView(withId(R.id.btnNext))
             .perform(click())
 
         onView(withId(R.id.tvText))
@@ -298,15 +420,18 @@ class E2EAndroidTest {
     }
 
 
-    private fun getCurrentActivity(): Activity {
-         var currentActivity:Activity? = null
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {}
+    private fun getCurrentActivity(): AppCompatActivity {
+        var currentActivity:Activity? = null
 
-         val activities:Collection<Activity> =
-             ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED)
-        if(activities.iterator().hasNext())
-            currentActivity = activities.iterator().next()
+        getInstrumentation().waitForIdleSync()
 
-        return currentActivity!!
+        getInstrumentation().runOnMainSync {
+            val activities:Collection<Activity> =
+                ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED)
+            if(activities.iterator().hasNext())
+                currentActivity = activities.iterator().next()
+        }
+
+        return currentActivity as AppCompatActivity
     }
 }

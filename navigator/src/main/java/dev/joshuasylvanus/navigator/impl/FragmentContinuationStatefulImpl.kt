@@ -1,10 +1,14 @@
 package dev.joshuasylvanus.navigator.impl
 
+import androidx.annotation.AnimRes
+import androidx.annotation.AnimatorRes
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import dev.joshuasylvanus.navigator.ContainerNotSetException
+import dev.joshuasylvanus.navigator.exceptions.ContainerNotSetException
+import dev.joshuasylvanus.navigator.Navigator
+import dev.joshuasylvanus.navigator.exceptions.PackageNameNotSetException
 import dev.joshuasylvanus.navigator.R
 import dev.joshuasylvanus.navigator.interfaces.FragmentContinuationStateful
 
@@ -15,8 +19,17 @@ import dev.joshuasylvanus.navigator.interfaces.FragmentContinuationStateful
 class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentManager)
     : FragmentContinuationStateful {
     //region Vars
-    private val DEFAULT_FRAGMENT_TAG = "NOT_SET"
-    private val DEFAULT_CONTAINER_ID = 0
+    private val DEFAULT_STRING_TAG = "NOT_SET"
+    private val DEFAULT_INT_TAG = 0
+
+    @AnimatorRes @AnimRes
+    private val customAnimationArgs:IntArray = intArrayOf(
+        R.anim.enter,
+        R.anim.exit,
+        R.anim.pop_enter,
+        R.anim.pop_exit )
+    private var isThereSetCustomAnimations:Boolean = false
+
     @IdRes
     private var intoArgs: Int = 0
     private var isThereInto: Boolean = false
@@ -26,19 +39,16 @@ class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentMana
 
     private var isThereHideCurrent: Boolean = false
 
-    private var isThereShow1: Boolean = false
-    private val show1Args: Array<Any?> = emptyArray()
-
-    private lateinit var show2Args: Fragment
-    private var isThereShow2: Boolean = false
+    private lateinit var showArgs: Fragment
+    private var isThereShow: Boolean = false
 
 
     private var transaction: FragmentTransaction? = null
-    private var containerID: Int = DEFAULT_CONTAINER_ID
+    private var containerID: Int = DEFAULT_INT_TAG
 
     private var afterArgs:(() -> Unit)? = null
 
-    private var currentFragmentTag:String = DEFAULT_FRAGMENT_TAG
+    private var currentFragmentTag:String = DEFAULT_STRING_TAG
     private var fragmentTagList:MutableList<String> = mutableListOf()
     //endregion
 
@@ -49,28 +59,63 @@ class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentMana
         isThereInto = false
         isThereReplace = false
         isThereHideCurrent = false
-        isThereShow1 = false
-        isThereShow2 = false
+        isThereShow = false
 
         transaction = fragmentManager.beginTransaction()
         transaction!!.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        transaction!!.setCustomAnimations(
-            R.anim.enter,
-            R.anim.exit,
-            R.anim.pop_enter,
-            R.anim.pop_exit )
     }
 
+    /**
+     * Libraries like Glide create their own Fragments, and this becomes a problem
+     * during reinitialisation, so to ensure that only Fragments that relate to
+     * your app are added back in the FragmentList, set a packageIdentifier */
     private fun reinitialize(){
+        val packageIdentifier:String =
+            Navigator.getPackageIdentifier() ?: throw PackageNameNotSetException()
+
         val fragmentList:MutableList<Fragment> = fragmentManager.getFragments()
         for(f in fragmentList){
-            if(f != null)
+            if(f != null && f::class.simpleName?.contains(packageIdentifier) == true)
                 fragmentTagList.add(f.tag!!)
         }
 
         if(fragmentTagList.isNotEmpty())
            currentFragmentTag = fragmentTagList.last()
     }
+
+    /**
+     * sets the custom animations for the various transitions fragments go though
+     * you need only provide values for the transitions you are interested in, defaults
+     * that are quite sufficient are provided for any parameters not set
+     *
+     * @param enter the enter animation
+     * @param exit the exit animation
+     * @param popEnter the pop-enter animation
+     * @param popExit the pop-exit animation
+     * */
+    override fun setCustomAnimations(@AnimatorRes @AnimRes enter:Int?,
+                                     @AnimatorRes @AnimRes exit: Int?,
+                                     @AnimatorRes @AnimRes popEnter: Int?,
+                                     @AnimatorRes @AnimRes popExit: Int?) : FragmentContinuationStateful {
+        enter?.let { customAnimationArgs[0] = it }
+        exit?.let { customAnimationArgs[1] = it }
+        popEnter?.let { customAnimationArgs[2] = it }
+        popExit?.let { customAnimationArgs[3] = it }
+
+        isThereSetCustomAnimations = true
+        return this
+    }
+
+    private fun _setCustomAnimations(){
+        transaction!!.setCustomAnimations(
+            customAnimationArgs[0],
+            customAnimationArgs[1],
+            customAnimationArgs[2],
+            customAnimationArgs[3])
+    }
+
+
+
 
    /**
     * set a container for the fragments to be hosted during the lifetime of this FragmentContinuationStateful
@@ -121,27 +166,10 @@ class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentMana
     }
 
     private fun _hideCurrent() {
-        if(currentFragmentTag != DEFAULT_FRAGMENT_TAG) {
+        if(currentFragmentTag != DEFAULT_STRING_TAG) {
             val f: Fragment = fragmentManager.findFragmentByTag(currentFragmentTag)!!
             transaction!!.hide(f)
         }
-    }
-
-    /**
-     * show fragment with tag, currentTag should be the KClass#simplename of the fragment
-     * currently visible
-     *
-     * @param f fragment to be shown
-     * @param currentTag not needed, but was intended to be the KClass#simplename of the fragment
-     *                   currently visible
-     * @return the same FragmentContinuationStateful object
-     * @deprecated use only FragmentContinuationStateful#show */
-    override fun show(f: Fragment, currentTag: String?): FragmentContinuationStateful {
-        /*no op, no need since the whole purpose of this implementation is to remove the need for this method*/
-        isThereShow1 = true
-        show1Args[0] = f
-        show1Args[1] = currentTag
-        return this
     }
 
     /**
@@ -150,15 +178,15 @@ class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentMana
      * @param f fragment to be shown
      * @return the same FragmentContinuationStateful object */
     override fun show(f: Fragment): FragmentContinuationStateful {
-        isThereShow2 = true
-        show2Args = f
+        isThereShow = true
+        showArgs = f
         return this
     }
 
     private fun _show(f: Fragment) {
         /* checking if this is a process recreation, during process recreation, android handles adding fragments back to
         * the fragmentManager but this renders the currentFragmentTag and fragmentTagList useless */
-        if(fragmentManager.findFragmentByTag(f::class.simpleName) != null && currentFragmentTag == DEFAULT_FRAGMENT_TAG)
+        if(fragmentManager.findFragmentByTag(f::class.simpleName) != null && currentFragmentTag == DEFAULT_STRING_TAG)
             reinitialize()
 
         if(fragmentManager.findFragmentByTag(f::class.simpleName) != null){
@@ -267,19 +295,20 @@ class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentMana
      *  and hideCurrent(), this code is to ensure a constant order of execution
      * irrespective of how the caller arranged the chain of method calls */
     override fun navigate(){
-        if(!isThereInto && currentFragmentTag == DEFAULT_FRAGMENT_TAG)
+        if(!isThereInto && currentFragmentTag == DEFAULT_STRING_TAG)
             throw ContainerNotSetException()
+
 
         if(isThereInto)
             _into(intoArgs)
+        if(isThereSetCustomAnimations)
+            _setCustomAnimations()
         if(isThereReplace)
             _replace(replaceArgs)
         if(isThereHideCurrent)
             _hideCurrent()
-        if(isThereShow1)
-            _show(show1Args[0] as Fragment)
-        if(isThereShow2)
-            _show(show2Args)
+        if(isThereShow)
+            _show(showArgs)
 
         transaction!!.commit()
         afterArgs?.invoke()

@@ -47,7 +47,7 @@ afterEvaluate {
                     description = 'a helper library for everything Activity and Fragment navigation in android'
                     url = 'https://github.com/Yungjay131/navigator'
 
-                    signing{
+                    signing {
                         sign publishing.publications.release
                         sign configurations.archives
                     }
@@ -58,6 +58,7 @@ afterEvaluate {
                             url = 'https://github.com/Yungjay131/navigator/blob/master/LICENSE'
                         }
                     }
+
                     developers {
                         developer {
                             id = 'Yungjay131'

@@ -5,8 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
+import androidx.annotation.AnimRes
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
+import dev.joshuasylvanus.navigator.R
 import dev.joshuasylvanus.navigator.interfaces.ActivityContinuation
 
 
@@ -20,6 +22,16 @@ class ActivityContinuationImpl(@PublishedApi
     private var shouldFinishCaller:Boolean = false
     private var transitionPairs:MutableList<Pair<View, String>> = mutableListOf()
 
+    @AnimRes
+    private var enterTransition:Int = R.anim.activity_enter
+    @AnimRes
+    private var exitTransition:Int = R.anim.activity_exit
+
+    override fun setActivityTransition(@AnimRes enterAnim:Int, @AnimRes exitAnim:Int): ActivityContinuation{
+       this.enterTransition = enterAnim
+       this.exitTransition = exitAnim
+       return this
+    }
 
     override fun addSharedElementTransition(view: View, transitionViewName: String): ActivityContinuation {
         this.transitionPairs.add(Pair<View,String>(view,transitionViewName))
@@ -89,9 +101,11 @@ class ActivityContinuationImpl(@PublishedApi
            options = ActivityOptionsCompat.makeSceneTransitionAnimation(this.activity!!, *transitionPairs.toTypedArray())
 
         activity!!.startActivity(this.intent, options?.toBundle())
+        activity!!.overridePendingTransition(enterTransition, exitTransition)
 
         if(shouldFinishCaller)
             activity!!.finish()
+
         activity = null
     }
 }
