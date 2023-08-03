@@ -28,8 +28,13 @@ class RegistrationOTP1Fragment : Fragment() {
 
     private fun initViews(){
         binding.btnNext.setOnClickListener {
-            (requireActivity() as RegistrationActivity).navigator
+           /* (requireActivity() as RegistrationActivity).navigator
                 .replace(RegistrationOTP2Fragment.newInstance())
+                .navigate()*/
+
+            (requireActivity() as RegistrationActivity).navigator
+                .popBackStackInBackground(RegistrationGeneral1Fragment::class.simpleName!!)
+                .show(RegistrationGeneral0Fragment.newInstance())
                 .navigate()
         }
     }

@@ -2,14 +2,15 @@ package dev.joshuasylvanus.navigator.impl
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
 import androidx.annotation.AnimRes
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.util.Pair
-import dev.joshuasylvanus.navigator.R
-import dev.joshuasylvanus.navigator.interfaces.ActivityContinuation
+import com.freexitnow.navigation_lib.R
+import com.freexitnow.navigation_lib.interfaces.ActivityContinuation
+import java.util.ArrayList
 
 
 /**
@@ -38,6 +39,11 @@ class ActivityContinuationImpl(@PublishedApi
         return this
     }
 
+    override fun addIntentData(uri: Uri): ActivityContinuation {
+        this.intent.setData(uri)
+        return this
+    }
+
     override fun addExtra(key: String, value: Any): ActivityContinuation {
         when(value){
             is Int -> this.intent.putExtra(key, value)
@@ -49,6 +55,21 @@ class ActivityContinuationImpl(@PublishedApi
             is String -> this.intent.putExtra(key, value)
             is Bundle -> this.intent.putExtra(key, value)
             is Parcelable -> this.intent.putExtra(key, value)
+            is List<*> -> {
+               val _v1: Parcelable? = value[0] as? Parcelable
+               val _v2: Int? = value[0] as? Int
+               val _v3: CharSequence? = value[0] as? CharSequence
+               when{
+                   _v1 != null ->
+                       this.intent.putParcelableArrayListExtra(key,value as ArrayList<out Parcelable>)
+                   _v2 != null ->
+                       this.intent.putIntegerArrayListExtra(key,value as ArrayList<Int>)
+                   _v3 != null ->
+                        this.intent.putCharSequenceArrayListExtra(key, value as ArrayList<CharSequence>)
+                   else -> throw IllegalArgumentException("List type is not supported")
+               }
+            }
+
             else -> throw IllegalArgumentException("the type for `value` is not supported")
         }
 

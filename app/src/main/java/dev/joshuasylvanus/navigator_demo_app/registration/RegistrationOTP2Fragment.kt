@@ -29,9 +29,9 @@ class RegistrationOTP2Fragment : Fragment() {
     }
 
     private fun initViews(){
-        Navigator.intentFor<VerificationActivity>(requireActivity())
+        /*Navigator.intentFor<VerificationActivity>(requireActivity())
             .previousIsTop()
-            .navigate()
+            .navigate()*/
 
     }
 }

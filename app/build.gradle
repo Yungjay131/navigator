@@ -63,7 +63,6 @@ dependencies {
     implementation impl_depends.material
 
     implementation impl_depends.kotlin_stdlib
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     androidTestImplementation test_depends.core_testing
     androidTestImplementation test_depends.junit

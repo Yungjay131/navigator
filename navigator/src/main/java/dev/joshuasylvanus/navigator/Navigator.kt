@@ -17,6 +17,7 @@ import dev.joshuasylvanus.navigator.interfaces.ActivityContinuation
 import dev.joshuasylvanus.navigator.interfaces.FragmentContinuationStateful
 import dev.joshuasylvanus.navigator.impl.ActivityContinuationImpl
 import dev.joshuasylvanus.navigator.impl.FragmentContinuationStatefulImpl
+import java.util.ArrayList
 
 
 /**
@@ -35,7 +36,16 @@ class Navigator private constructor() {
     }
 
     companion object{
+        private var onCurrentFragmentChanged: ((String) -> Unit)? = null
         private var packageIdentifier:String? = null
+
+        @JvmStatic
+        fun getOnCurrentFragmentChangedFunc():((String) -> Unit)? = onCurrentFragmentChanged
+
+        @JvmStatic
+        fun setOnCurrentFragmentChangedFunc(onChangedFunc: (String) -> Unit){
+            onCurrentFragmentChanged = onChangedFunc
+        }
 
         @JvmStatic
         fun getPackageIdentifier():String? = packageIdentifier
@@ -51,16 +61,44 @@ class Navigator private constructor() {
         }
 
         @JvmStatic
-        fun restartApp(context:Context,
-                       extraKey:String? = null,
-                       extraValue:String? = null){
+        inline fun <reified T> restartApp(context:Context,
+                                          extraKey:String? = null,
+                                          extraValue:T? = null){
             val packageManager:PackageManager = context.packageManager
             val originalIntent:Intent = packageManager.getLaunchIntentForPackage(context.packageName)!!
             val componentName:ComponentName = originalIntent.component!!
 
             val intent:Intent = Intent.makeRestartActivityTask(componentName)
-            if(extraKey != null && extraValue != null)
-                intent.putExtra(extraKey, extraValue)
+            if(extraKey != null && extraValue != null){
+                when(extraValue){
+                    is Int -> intent.putExtra(extraKey, extraValue)
+                    is Double -> intent.putExtra(extraKey, extraValue)
+                    is Long -> intent.putExtra(extraKey, extraValue)
+                    is Char -> intent.putExtra(extraKey, extraValue)
+                    is Byte -> intent.putExtra(extraKey, extraValue)
+                    is Boolean -> intent.putExtra(extraKey, extraValue)
+                    is String -> intent.putExtra(extraKey, extraValue)
+                    is Bundle -> intent.putExtra(extraKey, extraValue)
+                    is Parcelable -> intent.putExtra(extraKey, extraValue)
+                    is List<*> -> {
+                        val _v1: Parcelable? = extraValue[0] as? Parcelable
+                        val _v2: Int? = extraValue[0] as? Int
+                        val _v3: CharSequence? = extraValue[0] as? CharSequence
+                        when{
+                            _v1 != null ->
+                                intent.putParcelableArrayListExtra(extraKey,extraValue as ArrayList<out Parcelable>)
+                            _v2 != null ->
+                                intent.putIntegerArrayListExtra(extraKey,extraValue as ArrayList<Int>)
+                            _v3 != null ->
+                                intent.putCharSequenceArrayListExtra(extraKey, extraValue as ArrayList<CharSequence>)
+                            else -> throw IllegalArgumentException("List type is not supported")
+                        }
+                    }
+                    is Unit -> {}
+                    else -> throw IllegalArgumentException("the type for `value` is not supported")
+                }
+            }
+
             context.startActivity(intent)
 
             Runtime.getRuntime().exit(0)
@@ -124,6 +162,7 @@ class Navigator private constructor() {
                 args[2],
                 args[3])
             transaction.replace(containerID, f)
+            transaction.commit()
         }
 
         /**
@@ -171,6 +210,8 @@ class Navigator private constructor() {
                 transaction.show(f)
             }else
                 transaction.add(containerID, f)
+
+            transaction.commit()
         }
 
 
@@ -265,6 +306,7 @@ class Navigator private constructor() {
                     val ba:ByteArray = this.getByteArrayExtra(key) ?: return defaultValue
                     ba as? T
                 }
+
 
                 else -> throw IllegalArgumentException("type of ${T::class} is not supported")
             }

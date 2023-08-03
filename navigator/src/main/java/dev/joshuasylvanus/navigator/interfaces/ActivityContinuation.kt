@@ -1,5 +1,6 @@
 package dev.joshuasylvanus.navigator.interfaces
 
+import android.net.Uri
 import android.view.View
 import androidx.annotation.AnimRes
 
@@ -13,6 +14,8 @@ interface ActivityContinuation {
     fun addSharedElementTransition(view:View, transitionViewName:String): ActivityContinuation
 
     fun addExtra(key:String, value:Any): ActivityContinuation
+
+    fun addIntentData(uri: Uri): ActivityContinuation
 
     fun setPackageName(packageName:String): ActivityContinuation
 

@@ -4,12 +4,8 @@ import androidx.annotation.AnimRes
 import androidx.annotation.AnimatorRes
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 
 
-/**
- * Created by Joshua Sylvanus, 6:00 AM, 25/08/2022.
- */
 interface FragmentContinuationStateful  {
     fun into(@IdRes containerID: Int): FragmentContinuationStateful
 
@@ -26,7 +22,11 @@ interface FragmentContinuationStateful  {
 
     fun after(block: () -> Unit): FragmentContinuationStateful
 
+    fun setFragmentObserver(observer: FragmentLifecycleObserver): FragmentContinuationStateful
+
     fun navigate()
+
+    fun popBackStackInBackground(tag:String): FragmentContinuationStateful
 
     fun popBackStack(also: ((String) -> Unit)? = null):Boolean
 

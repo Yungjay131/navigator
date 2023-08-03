@@ -19,3 +19,7 @@ const val FRAGMENT_REG_OTP = "fragment_registration_otp"
 const val KEY_FRAGMENT = "dev.joshuasylvanus.navigator_demo_app.KEY_FRAGMENT"
 const val KEY_HOME_ARGS = "dev.joshuasylvanus.navigator_demo_app.KEY_HOME_ARGS"
 const val KEY_SPLASH_ARGS = "dev.joshuasylvanus.navigator_demo_app.KEY_SPLASH_ARGS"
+
+const val KEY_OB_ARGS_1 = "dev.joshuasylvanus.navigator_demo_app.KEY_OB_ARGS_1"
+const val KEY_OB_ARGS_2 = "dev.joshuasylvanus.navigator_demo_app.KEY_OB_ARGS_2"
+const val KEY_OB_ARGS_3 = "dev.joshuasylvanus.navigator_demo_app.KEY_OB_ARGS_3"

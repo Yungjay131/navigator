@@ -1,12 +1,11 @@
 package dev.joshuasylvanus.navigator_demo_app.splash
 
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.annotation.VisibleForTesting
 import dev.joshuasylvanus.navigator.Navigator
 import dev.joshuasylvanus.navigator.Navigator.Companion.getExtra
-import dev.joshuasylvanus.navigator_demo_app.BaseActivity
-import dev.joshuasylvanus.navigator_demo_app.KEY_SPLASH_ARGS
-import dev.joshuasylvanus.navigator_demo_app.MOnBackPressedCallback
+import dev.joshuasylvanus.navigator_demo_app.*
 import dev.joshuasylvanus.navigator_demo_app.databinding.ActivitySplashBinding
 import dev.joshuasylvanus.navigator_demo_app.login.LoginActivity
 import dev.joshuasylvanus.navigator_demo_app.onboarding.OnboardingActivity
@@ -32,8 +31,15 @@ class SplashActivity : BaseActivity() {
         this.onBackPressedDispatcher
             .addCallback(this, MOnBackPressedCallback(this))
 
+        val parcelableList:List<Args> = listOf(Args("1"), Args(""))
+        val stringsList:List<String> = listOf("1","2")
+        val intList:List<Int> = listOf(1,2)
+
         binding.btnNext.setOnClickListener {
             Navigator.intentFor<OnboardingActivity>(this@SplashActivity)
+                .addExtra(KEY_OB_ARGS_1, parcelableList)
+                .addExtra(KEY_OB_ARGS_2, stringsList)
+                .addExtra(KEY_OB_ARGS_3, intList)
                 .newAndClearTask()
                 .navigate()
         }

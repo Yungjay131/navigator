@@ -47,12 +47,10 @@ afterEvaluate {
                     description = 'a helper library for everything Activity and Fragment navigation in android'
                     url = 'https://github.com/Yungjay131/navigator'
                    
-                    /*
                     signing {
                         sign publishing.publications.release
                         sign configurations.archives
                     }
-                    */
 
                     licenses {
                         license {
@@ -94,11 +92,12 @@ afterEvaluate {
     }
 }
 
-signing {
+/*signing {
     useInMemoryPgpKeys(
             rootProject.ext["signing.keyId"],
             rootProject.ext["signing.key"],
             rootProject.ext["signing.password"],
     )
     sign publishing.publications
-}
+    sign configurations.archives
+}*/

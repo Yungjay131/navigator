@@ -36,7 +36,7 @@ class RegistrationActivity : BaseActivity() {
         this.onBackPressedDispatcher
             .addCallback(this, MOnBackPressedCallback(this, navigator))
 
-        val fragKey:String = intent.getExtra<String>(KEY_FRAGMENT, FRAGMENT_REG_ZERO)!!
+        val fragKey:String = intent.getExtra<String>(KEY_FRAGMENT, FRAGMENT_REG_ONE)!!
 
         navigator
             .into(binding.rootView.id)

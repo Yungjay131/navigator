@@ -138,6 +138,6 @@ repositories {
 }
 
 dependencies {
-   implementation 'dev.joshuasylvanus.navigator:navigator:1.0.0-alpha'
+   implementation 'dev.joshuasylvanus.navigator:navigator:1.0.6'
 }
 ```
