@@ -78,17 +78,18 @@ afterEvaluate {
             }
         }
 
-       /* repositories  {
+        /*repositories  {
             maven {
                 url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-                credentials = MAVEN_CENTRAL_USERNAME
-                password = MAVEN_CENTRAL_PASSWORD
+                credentials = rootProject.ext["mavenCentralUsername"]
+                password = rootProject.ext["mavenCentralPassword"]
                  credentials {
-                    username = MAVEN_CENTRAL_USERNAME
-                    password = MAVEN_CENTRAL_PASSWORD
+                    username = rootProject.ext["mavenCentralUsername"]
+                    password = rootProject.ext["mavenCentralPassword"]
                 }
             }
         }*/
+
     }
 }
 
@@ -100,4 +101,9 @@ afterEvaluate {
     )
     sign publishing.publications
     sign configurations.archives
+}*/
+
+/*signing {
+    useGpgCmd()
+    sign publishing.publications
 }*/

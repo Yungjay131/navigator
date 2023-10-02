@@ -24,10 +24,10 @@ import java.util.ArrayList
  * Created by Joshua Sylvanus, 9:27 PM, 20/08/2022.
  */
 
-const val DEFAULT_INT_VALUE = -120934
-const val DEFAULT_FLOAT_VALUE = -0.1020304050F
-const val DEFAULT_DOUBLE_VALUE = -120934.012
-const val DEFAULT_LONG_VALUE = 1020304050L
+const val DEFAULT_INT_VALUE = -102030
+const val DEFAULT_FLOAT_VALUE = -0.102030F
+const val DEFAULT_DOUBLE_VALUE = -102030.1020
+const val DEFAULT_LONG_VALUE = 10203040L
 
 class Navigator private constructor() {
 
@@ -38,6 +38,41 @@ class Navigator private constructor() {
     companion object{
         private var onCurrentFragmentChanged: ((String) -> Unit)? = null
         private var packageIdentifier:String? = null
+
+
+        @JvmStatic
+        @AnimRes
+        fun getActivityEnterTransition(): Int =
+            R.anim.activity_enter_slide_in_from_top
+
+        @JvmStatic
+        @AnimRes
+        fun getActivityExitTransition(): Int =
+            R.anim.activity_exit_slide_down
+
+        @JvmStatic
+        @AnimatorRes
+        @AnimRes
+        fun getFragmentEnterTransition():Int =
+            R.anim.enter
+
+        @JvmStatic
+        @AnimatorRes
+        @AnimRes
+        fun getFragmentExitTransition():Int =
+            R.anim.exit
+
+        @JvmStatic
+        @AnimatorRes
+        @AnimRes
+        fun getFragmentPopEnterTransition():Int =
+            R.anim.pop_enter
+
+        @JvmStatic
+        @AnimatorRes
+        @AnimRes
+        fun getFragmentPopExitTransition():Int =
+            R.anim.pop_exit
 
         @JvmStatic
         fun getOnCurrentFragmentChangedFunc():((String) -> Unit)? = onCurrentFragmentChanged
@@ -61,15 +96,17 @@ class Navigator private constructor() {
         }
 
         @JvmStatic
-        inline fun <reified T> restartApp(context:Context,
-                                          extraKey:String? = null,
-                                          extraValue:T? = null){
+        fun restartApp(context:Context,
+                       extraValues:Map<String,Any>? = null){
             val packageManager:PackageManager = context.packageManager
             val originalIntent:Intent = packageManager.getLaunchIntentForPackage(context.packageName)!!
             val componentName:ComponentName = originalIntent.component!!
 
             val intent:Intent = Intent.makeRestartActivityTask(componentName)
-            if(extraKey != null && extraValue != null){
+            extraValues?.forEach {
+                val extraKey:String = it.key
+                val extraValue:Any = it.value
+
                 when(extraValue){
                     is Int -> intent.putExtra(extraKey, extraValue)
                     is Double -> intent.putExtra(extraKey, extraValue)
@@ -106,15 +143,15 @@ class Navigator private constructor() {
 
         @JvmStatic
         inline fun <reified T: Activity> intentFor(from: Context): ActivityContinuation =
-            ActivityContinuationImpl(Intent(from, T::class.java), from as AppCompatActivity)
+            ActivityContinuationImpl(Intent(from, T::class.java), from)
 
         @JvmStatic
         fun intentFor(from: Context, clazz: Class<out AppCompatActivity>): ActivityContinuation =
-            ActivityContinuationImpl(Intent(from, clazz), from as AppCompatActivity)
+            ActivityContinuationImpl(Intent(from, clazz), from)
 
         @JvmStatic
         fun intentFor(from:Context, intentFilter:String): ActivityContinuation =
-            ActivityContinuationImpl(Intent(intentFilter).setPackage(from.packageName), from as AppCompatActivity)
+            ActivityContinuationImpl(Intent(intentFilter).setPackage(from.packageName), from)
 
         @JvmStatic
         fun intentFromIntentFilter(from:Context, intentFilter:String): Intent =
@@ -134,10 +171,11 @@ class Navigator private constructor() {
          * @param anims: customise the transition animations for the transaction
          *               it should be an array with enter, exit, popEnter, popExit */
         @JvmStatic
-        fun replaceAnonymous(fm:FragmentManager,
+        fun replaceFragmentAnonymous(fm:FragmentManager,
                              containerID: Int,
                              f: Fragment,
-                             @AnimatorRes @AnimRes anims:IntArray? = null){
+                             @AnimatorRes
+                             @AnimRes anims:IntArray? = null){
             val args:IntArray = intArrayOf(
                 R.anim.enter,
                 R.anim.exit,
@@ -176,7 +214,7 @@ class Navigator private constructor() {
          * @param anims: customise the transition animations for the transaction
          *               it should be an array with enter, exit, popEnter, popExit */
          @JvmStatic
-         fun showAnonymous(fm:FragmentManager,
+         fun showFragmentAnonymous(fm:FragmentManager,
                            containerID: Int,
                            f: Fragment,
                            currentFragmentTag:String,
@@ -214,39 +252,8 @@ class Navigator private constructor() {
             transaction.commit()
         }
 
-
         @JvmStatic
-        @AnimRes
-        fun getActivityEnterTransition(): Int =
-            R.anim.activity_enter
-
-        @JvmStatic
-        @AnimRes
-        fun getActivityExitTransition(): Int =
-            R.anim.activity_exit
-
-        @JvmStatic
-        @AnimatorRes @AnimRes
-        fun getFragmentEnterTransition():Int =
-            R.anim.enter
-
-        @JvmStatic
-        @AnimatorRes @AnimRes
-        fun getFragmentExitTransition():Int =
-            R.anim.exit
-
-        @JvmStatic
-        @AnimatorRes @AnimRes
-        fun getFragmentPopEnterTransition():Int =
-            R.anim.pop_enter
-
-        @JvmStatic
-        @AnimatorRes @AnimRes
-        fun getFragmentPopExitTransition():Int =
-            R.anim.pop_exit
-
-        @JvmStatic
-        inline fun <reified T> Intent.getExtra(key:String, defaultValue:T? = null):T?{
+        inline fun <reified T> Intent.getExtra(key:String, defaultValue:T? = null):T?  {
             return when(T::class){
                 Boolean::class ->
                     this.getBooleanExtra(key, defaultValue!! as Boolean ) as T
@@ -306,7 +313,6 @@ class Navigator private constructor() {
                     val ba:ByteArray = this.getByteArrayExtra(key) ?: return defaultValue
                     ba as? T
                 }
-
 
                 else -> throw IllegalArgumentException("type of ${T::class} is not supported")
             }

@@ -8,8 +8,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import dev.joshuasylvanus.navigator.exceptions.ContainerNotSetException
 import dev.joshuasylvanus.navigator.Navigator
-import dev.joshuasylvanus.navigator.exceptions.PackageNameNotSetException
 import dev.joshuasylvanus.navigator.R
+import dev.joshuasylvanus.navigator.exceptions.PackageNameNotSetException
 import dev.joshuasylvanus.navigator.interfaces.FragmentContinuationStateful
 import dev.joshuasylvanus.navigator.interfaces.FragmentLifecycleObserver
 
@@ -49,7 +49,7 @@ class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentMana
     private var showArgs: Fragment? = null
     private var isThereShow: Boolean = false
 
-    private var setFragmentObserverArgs:FragmentLifecycleObserver? = null
+    private var setFragmentObserverArgs: FragmentLifecycleObserver? = null
     private var isThereSetFragmentObserver:Boolean = false
 
     //private var transaction: FragmentTransaction? = null
@@ -63,7 +63,9 @@ class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentMana
     private val transactionsList:MutableList<FragmentTransaction> = mutableListOf()
     //endregion
 
-    init { initialize() }
+    init {
+        initialize()
+    }
 
     private fun initialize(){
         /* resetting values */
@@ -228,9 +230,11 @@ class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentMana
     }
 
     private fun _show(f: Fragment) {
-        /* checking if this is a process recreation, during process recreation, android handles adding fragments back to
-        * the fragmentManager but this renders the currentFragmentTag and fragmentTagList useless */
-        if(fragmentManager.findFragmentByTag(f::class.simpleName) != null && currentFragmentTag == DEFAULT_STRING_TAG)
+        /* checking if this is a process recreation, during process recreation,
+           android handles adding fragments back to the fragmentManager
+           but this renders the currentFragmentTag and fragmentTagList useless */
+        if(fragmentManager.findFragmentByTag(f::class.simpleName) != null &&
+            currentFragmentTag == DEFAULT_STRING_TAG)
             reinitialize()
 
         if(fragmentManager.findFragmentByTag(f::class.simpleName) != null){
@@ -253,7 +257,11 @@ class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentMana
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 
             if(fragmentManager.findFragmentById(containerID) != null) {
-                transaction.hide(fragmentManager.findFragmentByTag(currentFragmentTag)!!)
+                val ___f:Fragment? = fragmentManager.findFragmentByTag(currentFragmentTag)
+                if(___f == null)
+                  return
+
+                transaction.hide(___f)
             }
 
             transaction.add(containerID, f, "${f::class.simpleName}")
@@ -287,10 +295,11 @@ class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentMana
      * pop does not happen if the currently visible fragment is the last fragment in the
      * fragmentManager
      * so as a flaw of Fragments, their onStop(), onPause() e.t.c
-     * are tied to their HostFragment, so this method attempst to
+     * are tied to their HostFragment, so this method attempts to
      * also notify the fragment popped to, that its now visible
      *
-     * @param also function to be run immediately after the pop
+     * @param also function to be run immediately after the pop, which takes the currentFragmentTag
+     *         as a parameter
      * @return true if the currently visible fragment is not the last
      *         false if the currently visible fragment is the last fragment*/
     override fun popBackStack(also:((String)->Unit)?):Boolean{
@@ -322,7 +331,7 @@ class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentMana
 
     /**
      * so as a flaw of Fragments, their onStop(), onPause() e.t.c
-     * are tied to their HostFragment, so this method attempst to
+     * are tied to their HostFragment, so this method attempts to
      * also notify the fragment popped to, that its now visible
      *
      * @param tag KClass#simpleName String of the fragment class you want to pop to,
@@ -369,7 +378,7 @@ class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentMana
      * pop fragments without affecting your UI per se
      * @param tag the fragment#KClass#simpleName which indicates the fragment to stop
      *            popping at */
-    override fun popBackStackInBackground(tag:String):FragmentContinuationStateful {
+    override fun popBackStackInBackground(tag:String): FragmentContinuationStateful {
         isTherePopBackStackInBackground = true
         popBackStackInBackgroundArgs = tag
         return this
@@ -381,10 +390,15 @@ class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentMana
             return
 
         val transaction:FragmentTransaction = fragmentManager.beginTransaction()
-        val l:List<String> = listOf(*fragmentTagList.toTypedArray())
-        for(i in index until l.size){
-            val _tag:String = l[i]
-            val f:Fragment = fragmentManager.findFragmentByTag(_tag) ?: continue
+
+        val fragmentTagList_copy:List<String> = listOf(*fragmentTagList.toTypedArray())
+        for(i in index until fragmentTagList_copy.size){
+            val _tag:String = fragmentTagList_copy[i]
+            val f:Fragment? = fragmentManager.findFragmentByTag(_tag)
+            if(f == null) {
+                continue
+            }
+
             fragmentTagList.remove(f::class.simpleName!!)
 
             transaction.remove(f)
@@ -406,6 +420,7 @@ class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentMana
 
     /**
      * this method takes an observer to be notified about changes to visibility
+     * for a specific set of transactions
      *
      * @param observer an implementation of the FragmentLifecycleObserver
      * @return the same FragmentContinuationStateful instance
@@ -434,23 +449,37 @@ class FragmentContinuationStatefulImpl(private val fragmentManager: FragmentMana
      *  and hideCurrent(), this code is to ensure a constant order of execution
      * irrespective of how the caller arranged the chain of method calls */
     override fun navigate(){
-        if(!isThereInto && currentFragmentTag == DEFAULT_STRING_TAG)
+        if(!isThereInto && currentFragmentTag == DEFAULT_STRING_TAG) {
             throw ContainerNotSetException()
+        }
 
-        if(isThereInto)
+        if(isThereInto) {
             _into(intoArgs)
-        if(isThereSetCustomAnimations)
+        }
+
+        if(isThereSetCustomAnimations) {
             _setCustomAnimations()
-        if(isTherePopBackStackInBackground)
+        }
+
+        if(isTherePopBackStackInBackground) {
             _popBackStackInBackground(popBackStackInBackgroundArgs)
-        if(isThereReplace)
+        }
+
+        if(isThereReplace) {
             _replace(replaceArgs!!)
-        if(isThereHideCurrent)
+        }
+
+        if(isThereHideCurrent) {
             _hideCurrent()
-        if(isThereShow)
+        }
+
+        if(isThereShow) {
             _show(showArgs!!)
-        if(isThereSetFragmentObserver)
+        }
+
+        if(isThereSetFragmentObserver) {
             _updateFragmentObserver(setFragmentObserverArgs!!)
+        }
 
         transactionsList.forEach { it.commit() }
         afterArgs?.invoke()

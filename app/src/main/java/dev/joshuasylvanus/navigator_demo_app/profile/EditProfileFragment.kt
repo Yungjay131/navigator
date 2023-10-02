@@ -36,7 +36,7 @@ class EditProfileFragment : Fragment() {
         }
 
         binding.btnNext2.setOnClickListener{
-            Navigator.restartApp(requireActivity(), KEY_SPLASH_ARGS, LOGIN_ACTIVITY)
+            Navigator.restartApp(requireActivity(),mapOf(KEY_SPLASH_ARGS to LOGIN_ACTIVITY))
         }
 
         binding.btnNext.setOnLongClickListener{

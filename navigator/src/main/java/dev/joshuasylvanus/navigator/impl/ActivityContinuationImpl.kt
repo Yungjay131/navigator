@@ -1,6 +1,7 @@
 package dev.joshuasylvanus.navigator.impl
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -8,8 +9,9 @@ import android.os.Parcelable
 import android.view.View
 import androidx.annotation.AnimRes
 import androidx.core.app.ActivityOptionsCompat
-import com.freexitnow.navigation_lib.R
-import com.freexitnow.navigation_lib.interfaces.ActivityContinuation
+import androidx.core.util.Pair
+import dev.joshuasylvanus.navigator.R
+import dev.joshuasylvanus.navigator.interfaces.ActivityContinuation
 import java.util.ArrayList
 
 
@@ -19,21 +21,33 @@ import java.util.ArrayList
 
 class ActivityContinuationImpl(@PublishedApi
                                internal val intent: Intent,
-                               private var activity: Activity?) : ActivityContinuation {
+                               private var activity: Context?) : ActivityContinuation {
     private var shouldFinishCaller:Boolean = false
     private var transitionPairs:MutableList<Pair<View, String>> = mutableListOf()
 
     @AnimRes
-    private var enterTransition:Int = R.anim.activity_enter
+    private var enterTransition:Int = R.anim.activity_enter_slide_in
     @AnimRes
-    private var exitTransition:Int = R.anim.activity_exit
+    private var exitTransition:Int = R.anim.activity_exit_fade_out
 
+    /**
+     * set the transitions to be used for this Activity navigation,
+     *
+     * please note that subsequent calls to this method, will overwrite
+     * previously set transition values
+     * @param enterAnim transition for the incoming Activity
+     * @param exitAnim transition for the outgoing activity
+     * @return same [ActivityContinuation] instance
+     * */
     override fun setActivityTransition(@AnimRes enterAnim:Int, @AnimRes exitAnim:Int): ActivityContinuation{
        this.enterTransition = enterAnim
        this.exitTransition = exitAnim
        return this
     }
 
+    /**
+     *
+     * */
     override fun addSharedElementTransition(view: View, transitionViewName: String): ActivityContinuation {
         this.transitionPairs.add(Pair<View,String>(view,transitionViewName))
         return this
@@ -118,15 +132,24 @@ class ActivityContinuationImpl(@PublishedApi
 
     override fun navigate(){
         var options:ActivityOptionsCompat? = null
-        if(transitionPairs.isNotEmpty())
-           options = ActivityOptionsCompat.makeSceneTransitionAnimation(this.activity!!, *transitionPairs.toTypedArray())
+        if(transitionPairs.isNotEmpty()) {
+            options =
+                ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    (activity as Activity),
+                    *transitionPairs.toTypedArray()
+                )
+        }
 
         activity!!.startActivity(this.intent, options?.toBundle())
-        activity!!.overridePendingTransition(enterTransition, exitTransition)
+        if(activity is Activity) {
+            (activity as Activity).overridePendingTransition(enterTransition, exitTransition)
+        }
 
-        if(shouldFinishCaller)
-            activity!!.finish()
+        if(shouldFinishCaller) {
+            (activity as Activity).finish()
+        }
 
+        transitionPairs.clear()
         activity = null
     }
 }
