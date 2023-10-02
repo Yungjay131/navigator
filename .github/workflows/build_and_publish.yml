@@ -31,7 +31,8 @@ jobs:
            run: chmod +x ./gradlew
 
          - name: Build Release artifact of the library
-           run: ./gradlew :navigator:assembleRelease --stacktrace
+           run: |
+               ./gradlew :navigator:assembleRelease --stacktrace
 
          - name: Upload and close staging repo on Maven
            run: |
