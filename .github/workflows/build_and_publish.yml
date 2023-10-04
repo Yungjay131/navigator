@@ -1,12 +1,11 @@
 name: Build and Publish .aar to Maven 
-#on:
-#   push:
-#      tags:
-#        - '**'
 on:
-  push:
-    - '**'
-    
+   push:
+     branches:
+       - 'master'
+     tags:
+        - '**'
+
 jobs:
    publish:
        name: Build .aar, Release and Publish
