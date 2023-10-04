@@ -24,10 +24,10 @@ jobs:
          - name: Cache Gradle and Gradle Wrapper
            uses: actions/cache@v3
            with:
-           path: |
-             ~/.gradle/caches
-             ~/.gradle/wrapper
-           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+              path: |
+                ~/.gradle/caches
+                ~/.gradle/wrapper
+              key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
 
          - name: Make gradlew executable
            run: chmod +x ./gradlew
