@@ -36,9 +36,7 @@ jobs:
            run: ./gradlew navigator:assembleRelease --stacktrace
 
          - name: Upload and close staging repo on Maven
-           run: |
-              ./gradlew navigator:publishReleasePublicationToSonatypeRepository 
-              --max-workers 1 closeAndReleaseSonatypeStagingRepository --stacktrace
+           run: ./gradlew navigator:publishReleasePublicationToSonatypeRepository --max-workers 1 closeAndReleaseSonatypeStagingRepository --stacktrace
            env:
              OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
              OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
