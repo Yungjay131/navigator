@@ -1,8 +1,6 @@
 name: Build and Publish .aar to Maven 
 on:
    push:
-     branches:
-       - 'master'
      tags:
         - '**'
 
