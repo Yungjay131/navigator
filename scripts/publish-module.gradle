@@ -47,10 +47,10 @@ afterEvaluate {
                     description = 'a helper library for everything Activity and Fragment navigation in android'
                     url = 'https://github.com/Yungjay131/navigator'
                    
-                    signing {
+                    /*signing {
                         sign publishing.publications.release
                         sign configurations.archives
-                    }
+                    }*/
 
                     licenses {
                         license {
@@ -81,29 +81,29 @@ afterEvaluate {
         /*repositories  {
             maven {
                 url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-                credentials = rootProject.ext["mavenCentralUsername"]
-                password = rootProject.ext["mavenCentralPassword"]
-                 credentials {
+                credentials {
                     username = rootProject.ext["mavenCentralUsername"]
                     password = rootProject.ext["mavenCentralPassword"]
                 }
             }
-        }*/
-
+        }
+*/
     }
 }
 
-/*signing {
+signing {
     useInMemoryPgpKeys(
             rootProject.ext["signing.keyId"],
             rootProject.ext["signing.key"],
             rootProject.ext["signing.password"],
     )
     sign publishing.publications
-    sign configurations.archives
-}*/
+}
 
-/*signing {
+/*
+signing {
     useGpgCmd()
-    sign publishing.publications
-}*/
+    sign publishing.publications.mavenJava
+    sign configurations.archives
+}
+*/
