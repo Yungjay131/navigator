@@ -1,6 +1,11 @@
 # navigator
 This is a library to handle Activity and Fragment navigation within android apps.
 
+A STEP BACK
+I was excited when the Navigation Component Library was released, but was left disappointed when it failed at a very simple task - I DON'T WANT TO DESTROY THE FRAGMENTS I AM NAVIGATING AWAY FROM - 
+I decided to create something using the existing FragmentManager apis.
+The second motivation was to have a central global component in my apps that handled Activity Navigation
+
 I've used it in a few projects and decided to make it a library.
 
 The entirety of the API methods are mostly static functions on `Navigator`.
