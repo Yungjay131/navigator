@@ -1,0 +1,127 @@
+public final class dev/joshuasylvanus/navigator/Navigator {
+	public static final field Companion Ldev/joshuasylvanus/navigator/Navigator$Companion;
+	public static final field DEFAULT_DOUBLE_VALUE D
+	public static final field DEFAULT_FLOAT_VALUE F
+	public static final field DEFAULT_INT_VALUE I
+	public static final field DEFAULT_LONG_VALUE J
+	public static final fun getActivityEnterTransition ()I
+	public static final fun getActivityExitTransition ()I
+	public static final fun getFragmentEnterTransition ()I
+	public static final fun getFragmentExitTransition ()I
+	public static final fun getFragmentPopEnterTransition ()I
+	public static final fun getFragmentPopExitTransition ()I
+	public static final fun getOnCurrentFragmentChangedFunc ()Lkotlin/jvm/functions/Function1;
+	public static final fun getPackageIdentifier ()Ljava/lang/String;
+	public static final fun getParcelable (Landroid/content/Intent;Ljava/lang/String;)Landroid/os/Parcelable;
+	public static final fun intentFor (Landroid/content/Context;Ljava/lang/Class;)Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public static final fun intentFor (Landroid/content/Context;Ljava/lang/String;)Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public static final fun intentFromIntentFilter (Landroid/content/Context;Ljava/lang/String;)Landroid/content/Intent;
+	public static final fun minimizeApp (Landroid/content/Context;)V
+	public static final fun replaceFragmentAnonymous (Landroidx/fragment/app/FragmentManager;ILandroidx/fragment/app/Fragment;[I)V
+	public static final fun restartApp (Landroid/content/Context;Ljava/util/Map;)V
+	public static final fun setOnCurrentFragmentChangedFunc (Lkotlin/jvm/functions/Function1;)V
+	public static final fun setPackageIdentifier (Ljava/lang/String;)V
+	public static final fun showFragmentAnonymous (Landroidx/fragment/app/FragmentManager;ILandroidx/fragment/app/Fragment;Ljava/lang/String;[I)V
+	public static final fun transactionWithStateFrom (Landroidx/fragment/app/FragmentManager;)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+}
+
+public final class dev/joshuasylvanus/navigator/Navigator$Companion {
+	public final fun getActivityEnterTransition ()I
+	public final fun getActivityExitTransition ()I
+	public final fun getFragmentEnterTransition ()I
+	public final fun getFragmentExitTransition ()I
+	public final fun getFragmentPopEnterTransition ()I
+	public final fun getFragmentPopExitTransition ()I
+	public final fun getOnCurrentFragmentChangedFunc ()Lkotlin/jvm/functions/Function1;
+	public final fun getPackageIdentifier ()Ljava/lang/String;
+	public final fun getParcelable (Landroid/content/Intent;Ljava/lang/String;)Landroid/os/Parcelable;
+	public final fun intentFor (Landroid/content/Context;Ljava/lang/Class;)Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public final fun intentFor (Landroid/content/Context;Ljava/lang/String;)Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public final fun intentFromIntentFilter (Landroid/content/Context;Ljava/lang/String;)Landroid/content/Intent;
+	public final fun minimizeApp (Landroid/content/Context;)V
+	public final fun replaceFragmentAnonymous (Landroidx/fragment/app/FragmentManager;ILandroidx/fragment/app/Fragment;[I)V
+	public static synthetic fun replaceFragmentAnonymous$default (Ldev/joshuasylvanus/navigator/Navigator$Companion;Landroidx/fragment/app/FragmentManager;ILandroidx/fragment/app/Fragment;[IILjava/lang/Object;)V
+	public final fun restartApp (Landroid/content/Context;Ljava/util/Map;)V
+	public static synthetic fun restartApp$default (Ldev/joshuasylvanus/navigator/Navigator$Companion;Landroid/content/Context;Ljava/util/Map;ILjava/lang/Object;)V
+	public final fun setOnCurrentFragmentChangedFunc (Lkotlin/jvm/functions/Function1;)V
+	public final fun setPackageIdentifier (Ljava/lang/String;)V
+	public final fun showFragmentAnonymous (Landroidx/fragment/app/FragmentManager;ILandroidx/fragment/app/Fragment;Ljava/lang/String;[I)V
+	public static synthetic fun showFragmentAnonymous$default (Ldev/joshuasylvanus/navigator/Navigator$Companion;Landroidx/fragment/app/FragmentManager;ILandroidx/fragment/app/Fragment;Ljava/lang/String;[IILjava/lang/Object;)V
+	public final fun transactionWithStateFrom (Landroidx/fragment/app/FragmentManager;)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+}
+
+public final class dev/joshuasylvanus/navigator/impl/ActivityContinuationImpl : dev/joshuasylvanus/navigator/interfaces/ActivityContinuation {
+	public fun <init> (Landroid/content/Intent;Landroid/content/Context;)V
+	public fun addExtra (Ljava/lang/String;Ljava/lang/Object;)Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public fun addIntentData (Landroid/net/Uri;)Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public fun addSharedElementTransition (Landroid/view/View;Ljava/lang/String;)Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public fun clearTop ()Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public fun finishCaller ()Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public final fun getIntent ()Landroid/content/Intent;
+	public fun navigate ()V
+	public fun newAndClearTask ()Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public fun noHistory ()Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public fun previousIsTop ()Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public fun reorderToFront ()Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public fun setActivityTransition (II)Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public fun setPackageName (Ljava/lang/String;)Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public fun singleTop ()Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+}
+
+public final class dev/joshuasylvanus/navigator/impl/FragmentContinuationStatefulImpl : dev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful {
+	public fun <init> (Landroidx/fragment/app/FragmentManager;)V
+	public fun after (Lkotlin/jvm/functions/Function0;)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+	public fun hideCurrent ()Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+	public fun into (I)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+	public fun navigate ()V
+	public fun onDestroy (Lkotlin/jvm/functions/Function0;)V
+	public fun popBackStack (Ljava/lang/String;)Z
+	public fun popBackStack (Lkotlin/jvm/functions/Function1;)Z
+	public fun popBackStackInBackground (Ljava/lang/String;)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+	public fun replace (Landroidx/fragment/app/Fragment;)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+	public fun setCustomAnimations (Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+	public fun setFragmentObserver (Ldev/joshuasylvanus/navigator/interfaces/FragmentLifecycleObserver;)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+	public fun show (Landroidx/fragment/app/Fragment;)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+}
+
+public abstract interface class dev/joshuasylvanus/navigator/interfaces/ActivityContinuation {
+	public abstract fun addExtra (Ljava/lang/String;Ljava/lang/Object;)Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public abstract fun addIntentData (Landroid/net/Uri;)Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public abstract fun addSharedElementTransition (Landroid/view/View;Ljava/lang/String;)Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public abstract fun clearTop ()Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public abstract fun finishCaller ()Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public abstract fun navigate ()V
+	public abstract fun newAndClearTask ()Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public abstract fun noHistory ()Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public abstract fun previousIsTop ()Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public abstract fun reorderToFront ()Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public abstract fun setActivityTransition (II)Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public abstract fun setPackageName (Ljava/lang/String;)Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+	public abstract fun singleTop ()Ldev/joshuasylvanus/navigator/interfaces/ActivityContinuation;
+}
+
+public abstract interface class dev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful {
+	public abstract fun after (Lkotlin/jvm/functions/Function0;)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+	public abstract fun hideCurrent ()Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+	public abstract fun into (I)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+	public abstract fun navigate ()V
+	public abstract fun onDestroy (Lkotlin/jvm/functions/Function0;)V
+	public abstract fun popBackStack (Ljava/lang/String;)Z
+	public abstract fun popBackStack (Lkotlin/jvm/functions/Function1;)Z
+	public abstract fun popBackStackInBackground (Ljava/lang/String;)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+	public abstract fun replace (Landroidx/fragment/app/Fragment;)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+	public abstract fun setCustomAnimations (Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+	public abstract fun setFragmentObserver (Ldev/joshuasylvanus/navigator/interfaces/FragmentLifecycleObserver;)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+	public abstract fun show (Landroidx/fragment/app/Fragment;)Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;
+}
+
+public final class dev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful$DefaultImpls {
+	public static synthetic fun onDestroy$default (Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static synthetic fun popBackStack$default (Ldev/joshuasylvanus/navigator/interfaces/FragmentContinuationStateful;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Z
+}
+
+public abstract interface class dev/joshuasylvanus/navigator/interfaces/FragmentLifecycleObserver {
+	public abstract fun onFragmentViewInvisible ()V
+	public abstract fun onFragmentViewVisible ()V
+}
+

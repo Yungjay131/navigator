@@ -13,22 +13,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import dev.joshuasylvanus.navigator.interfaces.ActivityContinuation
-import dev.joshuasylvanus.navigator.interfaces.FragmentContinuationStateful
 import dev.joshuasylvanus.navigator.impl.ActivityContinuationImpl
 import dev.joshuasylvanus.navigator.impl.FragmentContinuationStatefulImpl
-import java.util.ArrayList
+import dev.joshuasylvanus.navigator.interfaces.ActivityContinuation
+import dev.joshuasylvanus.navigator.interfaces.FragmentContinuationStateful
 
 
 /**
  * Created by Joshua Sylvanus, 9:27 PM, 20/08/2022.
  */
-
-const val DEFAULT_INT_VALUE = -102030
-const val DEFAULT_FLOAT_VALUE = -0.102030F
-const val DEFAULT_DOUBLE_VALUE = -102030.1020
-const val DEFAULT_LONG_VALUE = 10203040L
-
 class Navigator private constructor() {
 
     init {
@@ -36,6 +29,11 @@ class Navigator private constructor() {
     }
 
     companion object{
+        const val DEFAULT_INT_VALUE = -102030
+        const val DEFAULT_FLOAT_VALUE = -0.102030F
+        const val DEFAULT_DOUBLE_VALUE = -102030.1020
+        const val DEFAULT_LONG_VALUE = 10203040L
+
         private var onCurrentFragmentChanged: ((String) -> Unit)? = null
         private var packageIdentifier:String? = null
 
